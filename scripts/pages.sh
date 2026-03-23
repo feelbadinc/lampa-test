@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-git fetch origin pages 2>/dev/null \
+git fetch --depth=1 origin pages 2>/dev/null \
   && git worktree add --no-checkout _pages pages \
   || git worktree add --orphan -b pages _pages
 

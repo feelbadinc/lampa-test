@@ -2,12 +2,8 @@ name: Build nightly release
 
 on:
   workflow_dispatch:
-  # schedule:
-    # - cron: '0 0 * * *'
-
-env:
-  UPSTREAM_REPO: yumata/lampa-source
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   check:
@@ -44,14 +40,15 @@ jobs:
             "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Clone upstream repo
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh repo clone ${{ env.UPSTREAM_REPO }} _source -- --depth=1
+        run: |
+          git clone --depth=1 \
+            https://github.com/yumata/lampa-source _source
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
+          package-manager-cache: false
 
       - name: Install node modules
         working-directory: _source
@@ -64,10 +61,7 @@ jobs:
             --no-fund
 
       - name: Install inotify-tools
-        uses: awalsh128/cache-apt-pkgs-action@v1
-        with:
-          packages: inotify-tools
-          version: 1.0
+        run: sudo apt-get install -y --no-install-recommends inotify-tools
 
       - name: Build web app
         working-directory: _source

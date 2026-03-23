@@ -29,7 +29,7 @@ while true; do
   LAST=$(cat "$TMPFILE")
   NOW=$(date +%s)
   DIFF=$((NOW - LAST))
-  if [ "$DIFF" -gt 0 ]; then
+  if [ "$DIFF" -gt 1 ]; then
     echo "Stalling for ${DIFF}s"
   fi
   if [ "$DIFF" -ge 5 ]; then
