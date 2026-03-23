@@ -1,0 +1,89 @@
+name: Build nightly release
+
+on:
+  workflow_dispatch:
+  # schedule:
+    # - cron: '0 0 * * *'
+
+env:
+  UPSTREAM_REPO: yumata/lampa-source
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Check if build is needed
+        id: check
+        run: bash ${{ github.workspace }}/scripts/check.sh
+
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.skip != 'true'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Clone upstream repo
+        run: gh repo clone ${{ env.UPSTREAM_REPO }} _source -- --depth=1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+
+      - name: Cache node cacache
+        uses: actions/cache@v5
+        with:
+          path: ~/.node/_cacache
+          key: node-cacache-${{ github.run_id }}
+          restore-keys: node-cacache
+
+      - name: Generate node lockfile
+        working-directory: _source
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Cache node modules
+        id: cache-modules
+        uses: actions/cache@v5
+        with:
+          path: _source/node_modules
+          key: ${{ hashFiles('_source/package-lock.json') }}
+
+      - name: Install node modules
+        if: steps.cache-modules.outputs.cache-hit != 'true'
+        working-directory: _source
+        run: npm ci --omit=optional
+
+      - name: Install inotify-tools
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: inotify-tools
+          version: 1.0
+
+      - name: Build web app
+        working-directory: _source
+        run: bash ${{ github.workspace }}/scripts/build.sh
+
+      - name: Inject settings
+        working-directory: _source
+        run: bash ${{ github.workspace }}/scripts/settings.sh
+
+      - name: Push to pages branch
+        run: bash ${{ github.workspace }}/scripts/pages.sh

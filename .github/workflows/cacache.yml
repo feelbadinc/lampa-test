@@ -1,0 +1,21 @@
+name: Clean up node cache
+
+on:
+  workflow_dispatch:
+  # schedule:
+    # - cron: '0 1 1 * *'
+
+jobs:
+  cache-cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Cache node cacache
+        uses: actions/cache@v5
+        with:
+          path: ~/.node/_cacache
+          key: node-cacache-${{ github.run_id }}
+          restore-keys: node-cacache
+
+      - name: Verify node cache
+        run: npm cache verify

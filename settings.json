@@ -1,0 +1,8 @@
+{
+  "hide_important_params": false,
+  "torrents_use": true,
+  "disable_features": {
+    "ads": true,
+    "lgbt": true
+  }
+}
