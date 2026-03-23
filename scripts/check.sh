@@ -12,10 +12,10 @@ fi
 PAGES_DATE=$(gh api repos/$GITHUB_REPOSITORY/commits/pages \
   --jq '.commit.committer.date' 2>/dev/null || echo "")
 
-if [ -z "$PAGES_DATE" ] || [[ "$UPSTREAM_DATE" > "$PAGES_DATE" ]]; then
+# if [ -z "$PAGES_DATE" ] || [[ "$UPSTREAM_DATE" > "$PAGES_DATE" ]]; then
   echo "Last build is out of date, building"
   echo "skip=false" >> "$GITHUB_OUTPUT"
-else
-  echo "Last build is up to date, skipping"
-  echo "skip=true" >> "$GITHUB_OUTPUT"
-fi
+# else
+#   echo "Last build is up to date, skipping"
+#   echo "skip=true" >> "$GITHUB_OUTPUT"
+# fi
