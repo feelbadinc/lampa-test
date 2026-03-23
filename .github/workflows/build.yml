@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+env:
+  UPSTREAM_REPO: yumata/lampa-source
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -42,7 +45,7 @@ jobs:
       - name: Clone upstream repo
         run: |
           git clone --depth=1 \
-            https://github.com/yumata/lampa-source _source
+            https://github.com/${{ env.UPSTREAM_REPO }} _source
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
