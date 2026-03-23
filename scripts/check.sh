@@ -2,7 +2,7 @@
 set -e
 
 UPSTREAM_DATE=$(gh api repos/$UPSTREAM_REPO/commits/HEAD \
-  --jq '.commit.committer.date' 2>/dev/null)
+  --jq '.commit.committer.date' 2>/dev/null || echo "")
 
 if [ -z "$UPSTREAM_DATE" ]; then
   echo "Failed to reach upstream repo"
