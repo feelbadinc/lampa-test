@@ -16,7 +16,10 @@ jobs:
       skip: ${{ steps.check.outputs.skip }}
 
     steps:
-      - name: Check if build is needed
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Check if build is required
         id: check
         run: bash ${{ github.workspace }}/scripts/check.sh
 
