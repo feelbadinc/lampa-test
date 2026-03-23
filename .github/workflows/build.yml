@@ -16,9 +16,6 @@ jobs:
       skip: ${{ steps.check.outputs.skip }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
       - name: Check if build is needed
         id: check
         run: bash ${{ github.workspace }}/scripts/check.sh
@@ -31,14 +28,14 @@ jobs:
       contents: write
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email \
             "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Checkout
-        uses: actions/checkout@v6
 
       - name: Clone upstream repo
         run: gh repo clone ${{ env.UPSTREAM_REPO }} _source -- --depth=1
@@ -48,28 +45,15 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      - name: Cache node cacache
-        uses: actions/cache@v5
-        with:
-          path: ~/.node/_cacache
-          key: node-cacache-${{ github.run_id }}
-          restore-keys: node-cacache
-
-      - name: Generate node lockfile
-        working-directory: _source
-        run: npm install --package-lock-only --ignore-scripts
-
-      - name: Cache node modules
-        id: cache-modules
-        uses: actions/cache@v5
-        with:
-          path: _source/node_modules
-          key: ${{ hashFiles('_source/package-lock.json') }}
-
       - name: Install node modules
-        if: steps.cache-modules.outputs.cache-hit != 'true'
         working-directory: _source
-        run: npm ci --omit=optional
+        run: |
+          npm install \
+            --no-update-notifier \
+            --omit=optional \
+            --loglevel=error \
+            --no-audit \
+            --no-fund
 
       - name: Install inotify-tools
         uses: awalsh128/cache-apt-pkgs-action@v1

@@ -10,7 +10,7 @@ cleanup() {
 }
 
 trap cleanup EXIT
-mkdir -p build dest
+mkdir -p build dest plugins public
 
 setsid npm start 2>/dev/null &
 NPM_PID=$!
