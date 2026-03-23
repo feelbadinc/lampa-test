@@ -17,7 +17,7 @@ node -e "
   
   writeFileSync(
     'build/web/settings.js',
-    \`window.lampa_settings = \${settings};\`
+    \`window.lampa_settings = \${settings.trimEnd()};\`
   );
 "
 
