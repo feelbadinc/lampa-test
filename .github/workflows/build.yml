@@ -21,6 +21,8 @@ jobs:
 
       - name: Check if build is required
         id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash ${{ github.workspace }}/scripts/check.sh
 
   build:
@@ -41,6 +43,8 @@ jobs:
             "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Clone upstream repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh repo clone ${{ env.UPSTREAM_REPO }} _source -- --depth=1
 
       - name: Set up Node.js
