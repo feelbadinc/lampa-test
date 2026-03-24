@@ -2,6 +2,12 @@ name: Build and deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: Skip upstream check
+        type: boolean
+        default: false
+
   schedule:
     - cron: "0 0 * * *"
 
@@ -15,6 +21,7 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    if: ${{ !inputs.force }}
 
     outputs:
       skip: ${{ steps.check-upstream.outputs.skip }}
