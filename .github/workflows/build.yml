@@ -66,6 +66,7 @@ jobs:
         run: |
           npm install \
             --omit=optional \
+            --loglevel=error \
             --no-audit \
             --no-fund
 
