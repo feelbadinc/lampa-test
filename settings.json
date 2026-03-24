@@ -1,8 +1,9 @@
 {
-  "hide_important_params": false,
   "torrents_use": true,
   "disable_features": {
+    "dmca": true,
+    "lgbt": true,
     "ads": true,
-    "lgbt": true
+    "blacklist": true
   }
 }
