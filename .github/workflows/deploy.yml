@@ -69,7 +69,7 @@ jobs:
           node-version: "lts/*"
           package-manager-cache: false
 
-      - name: Install node modules
+      - name: Install Node.js modules
         working-directory: _source
         run: |
           npm install \
