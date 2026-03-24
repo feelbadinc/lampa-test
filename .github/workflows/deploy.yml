@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Deploy from upstream
 
 on:
   workflow_dispatch:
@@ -19,19 +19,19 @@ env:
   UPSTREAM_REPO: yumata/lampa-source
 
 jobs:
-  check:
+  check-upstream:
     runs-on: ubuntu-latest
     if: ${{ !inputs.force }}
 
     outputs:
-      skip: ${{ steps.check-upstream.outputs.skip }}
+      skip: ${{ steps.check.outputs.skip }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Check upstream against deploy
-        id: check-upstream
+        id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_API_VERSION: "2026-03-10"
@@ -39,12 +39,13 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: check
-    if: always() && needs.check.outputs.skip != 'true'
+    needs: check-upstream
+    if: always() && needs.check-upstream.outputs.skip != 'true'
 
     permissions:
       pages: write
       id-token: write
+      contents: write
 
     environment:
       name: github-pages
@@ -97,3 +98,13 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="lampa-$(date +'%Y-%m-%d')"
+          zip -r "$TAG.zip" _source/build/web/
+          gh release delete "$TAG" --yes 2>/dev/null || true
+          gh release create "$TAG" "$TAG.zip" \
+            --repo "$GITHUB_REPOSITORY" \
