@@ -115,4 +115,4 @@ jobs:
           gh release delete "$TAG" --yes 2>/dev/null || true
           gh release create "$TAG" "release.zip" \
             --repo "$GITHUB_REPOSITORY" \
-            --notes " " \
+            --notes "release.zip" \
