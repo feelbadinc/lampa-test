@@ -53,3 +53,7 @@ if [ ! -f "$BUILD_INDEX" ]; then
   echo "$BUILD_INDEX not found, exiting"
   exit 1
 fi
+
+sed -i \
+  's|http://www.youtube.com/iframe_api|//www.youtube.com/iframe_api|' \
+  "$BUILD_INDEX"
