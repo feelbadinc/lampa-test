@@ -1,5 +1,6 @@
 {
   "torrents_use": true,
+  "push_state": false,
   "disable_features": {
     "dmca": true,
     "lgbt": true,
