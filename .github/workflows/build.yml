@@ -71,7 +71,9 @@ jobs:
             --no-fund
 
       - name: Install inotify-tools
-        run: sudo apt-get install -qy --no-install-recommends inotify-tools
+        run: |
+          which inotifywait || \
+            sudo apt-get install -qy --no-install-recommends inotify-tools
 
       - name: Build web app
         working-directory: _source
