@@ -28,7 +28,7 @@ jobs:
         env:
           DEPLOY_EPOCH: ${{ vars.DEPLOY_EPOCH }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bash ${{ github.workspace }}/scripts/check.sh
+        run: bash .github/scripts/check.sh
 
   build:
     runs-on: ubuntu-latest
@@ -76,12 +76,10 @@ jobs:
             sudo apt-get install -qy --no-install-recommends inotify-tools
 
       - name: Build web app
-        working-directory: _source
-        run: bash ${{ github.workspace }}/scripts/build.sh
+        run: bash .github/scripts/build.sh
 
       - name: Inject custom settings
-        working-directory: _source
-        run: bash ${{ github.workspace }}/scripts/settings.sh
+        run: bash .github/scripts/settings.sh
 
       - name: Upload app build as artifact
         uses: actions/upload-pages-artifact@v4

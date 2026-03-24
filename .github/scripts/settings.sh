@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+cd _source
+
 if [ ! -f "$GITHUB_WORKSPACE/settings.json" ]; then
   echo "settings.json not found, skipping"
   exit 0

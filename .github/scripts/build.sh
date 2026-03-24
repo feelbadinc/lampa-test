@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+cd _source
+
 TMPFILE=$(mktemp)
 echo "0" > "$TMPFILE"
 
