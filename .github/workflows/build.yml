@@ -73,7 +73,8 @@ jobs:
       - name: Install inotify-tools
         run: |
           which inotifywait || \
-            sudo apt-get install -qy --no-install-recommends inotify-tools
+            NEEDRESTART_SUSPEND=1 \
+            sudo -E apt-get install -qy inotify-tools
 
       - name: Build web app
         run: bash .github/scripts/build.sh
