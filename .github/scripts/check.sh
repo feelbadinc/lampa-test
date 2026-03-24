@@ -2,6 +2,7 @@
 set -euo pipefail
 
 UPSTREAM_DATE=$(gh api repos/$UPSTREAM_REPO/commits/HEAD \
+  -H "X-GitHub-Api-Version: $GH_API_VERSION" \
   --jq '.commit.committer.date' 2>/dev/null || echo "")
 
 if [ -z "$UPSTREAM_DATE" ]; then
@@ -13,6 +14,7 @@ UPSTREAM_EPOCH=$(date -d "$UPSTREAM_DATE" +%s)
 
 DEPLOY_DATE=$(gh api \
   "repos/$GITHUB_REPOSITORY/deployments?environment=github-pages&per_page=1" \
+  -H "X-GitHub-Api-Version: $GH_API_VERSION" \
   --jq '.[0].updated_at' 2>/dev/null || echo "")
 
 DEPLOY_EPOCH=$(date -d "${DEPLOY_DATE:-@0}" +%s 2>/dev/null || echo 0)
