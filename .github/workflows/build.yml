@@ -1,9 +1,13 @@
-name: Build nightly release
+name: Build and publish
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 env:
   UPSTREAM_REPO: yumata/lampa-source
@@ -13,15 +17,16 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      skip: ${{ steps.check.outputs.skip }}
+      skip: ${{ steps.check-upstream.outputs.skip }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Check if build is required
-        id: check
+      - name: Check upstream against deployed build
+        id: check-upstream
         env:
+          DEPLOY_EPOCH: ${{ vars.DEPLOY_EPOCH }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash ${{ github.workspace }}/scripts/check.sh
 
@@ -29,18 +34,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: check
     if: needs.check.outputs.skip != 'true'
+
     permissions:
-      contents: write
+      pages: write
+      id-token: write
+      actions: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    env:
+      BUILD_INDEX: build/web/index.html
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Configure git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email \
-            "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Clone upstream repo
         run: |
@@ -50,29 +59,38 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
           package-manager-cache: false
 
       - name: Install node modules
         working-directory: _source
         run: |
           npm install \
-            --no-update-notifier \
             --omit=optional \
-            --loglevel=error \
             --no-audit \
             --no-fund
 
       - name: Install inotify-tools
-        run: sudo apt-get install -y -q --no-install-recommends inotify-tools
+        run: sudo apt-get install -qy --no-install-recommends inotify-tools
 
       - name: Build web app
         working-directory: _source
         run: bash ${{ github.workspace }}/scripts/build.sh
 
-      - name: Inject settings
+      - name: Inject custom settings
         working-directory: _source
         run: bash ${{ github.workspace }}/scripts/settings.sh
 
-      - name: Push to pages branch
-        run: bash ${{ github.workspace }}/scripts/pages.sh
+      - name: Upload app build as artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _source/build/web/
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Set DEPLOY_EPOCH var
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh variable set DEPLOY_EPOCH --body "$(date +%s)"

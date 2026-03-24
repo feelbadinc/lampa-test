@@ -1,25 +1,46 @@
 #!/bin/bash
-set -e
+set -euo pipefail
+
+if [ ! -f "$GITHUB_WORKSPACE/settings.json" ]; then
+  echo "settings.json not found, skipping"
+  exit 0
+fi
+
+if [ ! -f "$BUILD_INDEX" ]; then
+  echo "$BUILD_INDEX not found, skipping"
+  exit 0
+fi
+
+if ! grep -q "<body>" "$BUILD_INDEX"; then
+  echo "$BUILD_INDEX has no body tag, skipping"
+  exit 0
+fi
+
+SETTINGS_JS="${BUILD_INDEX%/*}/settings.js"
 
 node -e "
   const { readFileSync, writeFileSync } = require('node:fs');
-  let settings;
+  let settings, parsed;
 
   try {
-    settings = readFileSync(
-      '$GITHUB_WORKSPACE/settings.json', 'utf8'
-    );
-    JSON.parse(settings);
+    settings = readFileSync('$GITHUB_WORKSPACE/settings.json', 'utf8');
+    parsed = JSON.parse(settings);
   } catch {
     console.error('Failed to parse settings.json');
-    settings = '{}';
+    process.exit(1);
   }
-  
+
+  if (!Object.keys(parsed).length) process.exit(0);
+
   writeFileSync(
-    'build/web/settings.js',
-    \`window.lampa_settings = \${settings.trimEnd()};\`
+    '$SETTINGS_JS', \`window.lampa_settings = \${settings.trimEnd()};\`
   );
 "
 
-INJECTION='<body>\n    <script src="settings.js"></script>'
-sed -i "s|<body>|${INJECTION}|" build/web/index.html
+if [ ! -f "$SETTINGS_JS" ]; then
+  echo "No settings found, skipping"
+  exit 0
+fi
+
+INJECTION='<body>\n<script src="settings.js"></script>'
+sed -i "s|<body>|${INJECTION}|" "$BUILD_INDEX"
