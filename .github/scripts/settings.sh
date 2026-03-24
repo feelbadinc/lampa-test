@@ -44,5 +44,5 @@ if [ ! -f "$SETTINGS_JS" ]; then
   exit 0
 fi
 
-INJECTION='<body>\n<script src="settings.js"></script>'
+INJECTION='<body>\n    <script src="settings.js"></script>'
 sed -i "s|<body>|${INJECTION}|" "$BUILD_INDEX"
