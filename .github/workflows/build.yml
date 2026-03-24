@@ -90,7 +90,7 @@ jobs:
         id: deploy
         uses: actions/deploy-pages@v4
 
-      - name: Set DEPLOY_EPOCH var
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh variable set DEPLOY_EPOCH --body "$(date +%s)"
+      #- name: Set DEPLOY_EPOCH var
+        #env:
+          #GH_TOKEN: ${{ secrets.PAT }}
+        #run: gh variable set DEPLOY_EPOCH --body "$(date +%s)"
