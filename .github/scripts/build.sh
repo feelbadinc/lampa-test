@@ -4,7 +4,7 @@ set -euo pipefail
 cd _source
 
 TMPFILE=$(mktemp)
-echo "0" > "$TMPFILE"
+echo "init" > "$TMPFILE"
 
 cleanup() {
   rm -f "$TMPFILE"
@@ -25,7 +25,8 @@ done &
 INOT_PID=$!
 
 WAIT=0
-while [ "$(cat "$TMPFILE")" = "0" ]; do
+
+while [ "$(cat "$TMPFILE")" = "init" ]; do
   sleep 1
   WAIT=$((WAIT + 1))
   if [ "$WAIT" -ge 30 ]; then
