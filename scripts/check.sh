@@ -12,7 +12,6 @@ fi
 UPSTREAM_EPOCH=$(date -d "$UPSTREAM_DATE" +%s)
 
 if [ "${DEPLOY_EPOCH:-0}" -lt "$UPSTREAM_EPOCH" ]; then
-  echo "Deployed build is out of date, building"
   echo "skip=false" >> "$GITHUB_OUTPUT"
 else
   echo "Deployed build is up to date, skipping"
