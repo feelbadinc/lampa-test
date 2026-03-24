@@ -54,6 +54,4 @@ if [ ! -f "$BUILD_INDEX" ]; then
   exit 1
 fi
 
-sed -i \
-  's|http://www.youtube.com/iframe_api|//www.youtube.com/iframe_api|' \
-  "$BUILD_INDEX"
+sed -i 's|http://|//|g' "$BUILD_INDEX"
