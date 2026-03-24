@@ -30,4 +30,5 @@ if [ ! -f "$BUILD_INDEX" ]; then
   exit 1
 fi
 
+touch "${BUILD_INDEX%/*}/.nojekyll"
 sed -i 's|http://|//|g' "$BUILD_INDEX"
