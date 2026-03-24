@@ -1,4 +1,4 @@
-name: Build and Publish
+name: Build and deploy
 
 on:
   workflow_dispatch:
@@ -26,7 +26,6 @@ jobs:
       - name: Check upstream against deploy
         id: check-upstream
         env:
-          DEPLOY_EPOCH: ${{ vars.DEPLOY_EPOCH }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash .github/scripts/check.sh
 
@@ -38,7 +37,6 @@ jobs:
     permissions:
       pages: write
       id-token: write
-      actions: write
 
     environment:
       name: github-pages
@@ -89,8 +87,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
-
-      #- name: Set DEPLOY_EPOCH var
-        #env:
-          #GH_TOKEN: ${{ secrets.PAT }}
-        #run: gh variable set DEPLOY_EPOCH --body "$(date +%s)"

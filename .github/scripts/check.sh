@@ -11,7 +11,13 @@ fi
 
 UPSTREAM_EPOCH=$(date -d "$UPSTREAM_DATE" +%s)
 
-if [ "${DEPLOY_EPOCH:-0}" -lt "$UPSTREAM_EPOCH" ]; then
+DEPLOY_DATE=$(gh api \
+  "repos/$GITHUB_REPOSITORY/deployments?environment=github-pages&per_page=1" \
+  --jq '.[0].updated_at' 2>/dev/null || echo "")
+
+DEPLOY_EPOCH=$(date -d "${DEPLOY_DATE:-@0}" +%s 2>/dev/null || echo 0)
+
+if [ "$DEPLOY_EPOCH" -lt "$UPSTREAM_EPOCH" ]; then
   echo "skip=false" >> "$GITHUB_OUTPUT"
 else
   echo "Deployed build is up to date, skipping"
