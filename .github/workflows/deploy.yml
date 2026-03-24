@@ -87,7 +87,14 @@ jobs:
       - name: Build web app
         run: bash .github/scripts/build.sh
 
-      - name: Inject custom settings
+      - name: Inject unlock.js
+        run: |
+          cp .github/unlock.js _source/build/web/unlock.js
+          sed -i \
+            's|<body>|<body>\n    <script src="unlock.js"></script>|' \
+            _source/build/web/index.html
+
+      - name: Inject settings
         run: bash .github/scripts/settings.sh
 
       - name: Upload app build as artifact
