@@ -110,9 +110,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="lampas-$(date +'%Y-%m-%d')"
+          TAG="lampa-$(date +'%Y-%m-%d')"
           zip -r "release.zip" _source/build/web/
           gh release delete "$TAG" --yes 2>/dev/null || true
           gh release create "$TAG" "release.zip" \
             --repo "$GITHUB_REPOSITORY" \
-            --notes "" \
+            --notes " " \
