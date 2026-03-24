@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Check upstream against deployed build
+      - name: Check upstream against deploy
         id: check-upstream
         env:
           DEPLOY_EPOCH: ${{ vars.DEPLOY_EPOCH }}
