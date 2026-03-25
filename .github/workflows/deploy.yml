@@ -68,7 +68,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "lts/*"
-          package-manager-cache: false
+          package-manager-cache: false,
+          check-latest: false
 
       - name: Install Node.js modules
         working-directory: _source
