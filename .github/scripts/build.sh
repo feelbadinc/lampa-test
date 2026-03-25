@@ -30,5 +30,8 @@ if [ ! -f "$BUILD_INDEX" ]; then
   exit 1
 fi
 
-touch "${BUILD_INDEX%/*}/.nojekyll"
+BUILD_DIR="${BUILD_INDEX%/*}"
+rm -f "$BUILD_DIR/plugins_black_list.json"
+touch "$BUILD_DIR/.nojekyll"
+
 sed -i 's|http://|//|g' "$BUILD_INDEX"
