@@ -1,6 +1,5 @@
 #!/bin/bash
 set -euo pipefail
-
 cd _source
 
 cleanup() {
@@ -23,15 +22,4 @@ fi
 while inotifywait -r -e close_write --timeout 5 \
   build/ dest/ plugins/ public/ > /dev/null 2>&1; do :; done
 
-echo "Build finished"
-
-if [ ! -f "$BUILD_INDEX" ]; then
-  echo "$BUILD_INDEX not found, exiting"
-  exit 1
-fi
-
-BUILD_DIR="${BUILD_INDEX%/*}"
-rm -f "$BUILD_DIR/plugins_black_list.json"
-touch "$BUILD_DIR/.nojekyll"
-
-sed -i 's|http://|//|g' "$BUILD_INDEX"
+echo "Start pipeline finished"

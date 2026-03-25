@@ -1,17 +1,23 @@
 #!/bin/bash
 set -euo pipefail
-
 cd _source
 
-if ! grep -q "<body>" "$BUILD_INDEX"; then
-  echo "$BUILD_INDEX has no body tag, skipping"
+BUILD_INDEX="$BUILD_DIR/index.html"
+
+if [ ! -f "$BUILD_INDEX" ]; then
+  echo "$BUILD_INDEX not found, exiting"
+  exit 1
+fi
+
+touch "$BUILD_DIR/.nojekyll"
+
+if ! grep -q "<head>" "$BUILD_INDEX"; then
+  echo "$BUILD_INDEX has no <head> tag, skipping"
   exit 0
 fi
 
-BUILD_DIR="${BUILD_INDEX%/*}"
-INJECT=""
-
 JS_NOTRACE="$GITHUB_WORKSPACE/.github/scripts/_notrace.js"
+INJECT=""
 
 if [ -f "$JS_NOTRACE" ]; then
   echo "Injecting _notrace.js"
@@ -36,5 +42,5 @@ if [ -z "$INJECT" ]; then
   exit 0
 fi
 
-sed -i "s|<body>|<body>${INJECT}|" "$BUILD_INDEX"
+sed -i "s|<head>|<head>${INJECT}|" "$BUILD_INDEX"
 echo "Injection successful"

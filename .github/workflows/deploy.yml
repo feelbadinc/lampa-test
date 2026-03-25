@@ -53,7 +53,7 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
 
     env:
-      BUILD_INDEX: build/web/index.html
+      BUILD_DIR: build/github/lampa
 
     steps:
       - name: Checkout
@@ -85,8 +85,12 @@ jobs:
             NEEDRESTART_SUSPEND=1 \
             sudo -E apt-get install -qqy inotify-tools
 
-      - name: Build web app
-        run: bash .github/scripts/build.sh
+      - name: Run npm start pipeline
+        run: bash .github/scripts/devstart.sh
+
+      - name: Pack GitHub release
+        working-directory: _source
+        run: npx gulp pack_github
 
       - name: Inject overrides
         run: bash .github/scripts/overrides.sh
@@ -94,7 +98,7 @@ jobs:
       - name: Upload static files as artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: _source/build/web/
+          path: _source/${{ env.BUILD_DIR }}
 
       - name: Deploy to GitHub Pages
         id: deploy
