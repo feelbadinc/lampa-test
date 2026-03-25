@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "$DEPLOY_DATE"
+
 if [ -n "$LAST_DEPLOY" ]; then
   git clone --shallow-since="$LAST_DEPLOY" \
     https://github.com/$UPSTREAM_REPO _source
