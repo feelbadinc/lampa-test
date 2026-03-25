@@ -19,9 +19,10 @@ DEPLOY_DATE=$(gh api \
 
 DEPLOY_EPOCH=$(date -d "${DEPLOY_DATE:-@0}" +%s 2>/dev/null || echo 0)
 
-if [ "$DEPLOY_EPOCH" -lt "$UPSTREAM_EPOCH" ]; then
-  echo "skip=false" >> "$GITHUB_OUTPUT"
+if [[ "$DEPLOY_EPOCH" -lt "$UPSTREAM_EPOCH" || "$FORCE_BUILD" == "true" ]]; then
+  echo "last_deploy=$DEPLOY_DATE" >> "$GITHUB_OUTPUT"
+  echo "skip_build=false" >> "$GITHUB_OUTPUT"
 else
   echo "Deployed build is up to date, skipping"
-  echo "skip=true" >> "$GITHUB_OUTPUT"
+  echo "skip_build=true" >> "$GITHUB_OUTPUT"
 fi
