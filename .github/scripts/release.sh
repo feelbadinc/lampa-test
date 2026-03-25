@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-cp _source/LICENSE _source/build/web/
+mv _source/LICENSE _source/build/web/
 (cd _source/build/web && zip -r "$GITHUB_WORKSPACE/release.zip" .)
 
 TAG="lampa-$(date +'%Y-%m-%d')"

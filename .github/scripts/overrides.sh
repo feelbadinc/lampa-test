@@ -15,7 +15,7 @@ JS_NOTRACE="$GITHUB_WORKSPACE/.github/scripts/_notrace.js"
 
 if [ -f "$JS_NOTRACE" ]; then
   echo "Injecting _notrace.js"
-  cp "$JS_NOTRACE" "$BUILD_DIR/_notrace.js"
+  mv "$JS_NOTRACE" "$BUILD_DIR/_notrace.js"
   INJECT="${INJECT}\n    <script src=\"_notrace.js\"></script>"
 fi
 

@@ -93,7 +93,7 @@ jobs:
       - name: Inject overrides
         run: bash .github/scripts/overrides.sh
 
-      - name: Upload app build as artifact
+      - name: Upload static files as artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: _source/build/web/
