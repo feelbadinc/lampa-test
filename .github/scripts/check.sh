@@ -17,6 +17,8 @@ DEPLOY_DATE=$(gh api \
   -H "X-GitHub-Api-Version: $GH_API_VERSION" \
   --jq '.[0].updated_at' 2>/dev/null || echo "")
 
+echo "$DEPLOY_DATE"
+
 DEPLOY_EPOCH=$(date -d "${DEPLOY_DATE:-@0}" +%s 2>/dev/null || echo 0)
 
 if [[ "$DEPLOY_EPOCH" -lt "$UPSTREAM_EPOCH" || "$FORCE_BUILD" == "true" ]]; then
