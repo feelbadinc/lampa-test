@@ -30,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Check upstream against deploy
+      - name: Check against deploy
         id: check
         env:
           FORCE_BUILD: ${{ inputs.force_build }}
@@ -38,7 +38,7 @@ jobs:
           GH_API_VERSION: "2026-03-10"
         run: bash .github/scripts/check.sh
 
-  build:
+  build-app:
     runs-on: ubuntu-latest
     needs: check-upstream
     if: needs.check-upstream.outputs.skip_build != 'true'
