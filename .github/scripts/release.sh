@@ -1,8 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-mv _source/LICENSE _source/build/web/
-(cd _source/build/web && zip -r "$GITHUB_WORKSPACE/release.zip" .)
+(cd _source/$BUILD_DIR && zip -r "$GITHUB_WORKSPACE/release.zip" .)
 
 TAG="lampa-$(date +'%Y-%m-%d')"
 CHANGELOG=$(git -C _source --no-pager log --pretty=format:'- `%h` %s')
