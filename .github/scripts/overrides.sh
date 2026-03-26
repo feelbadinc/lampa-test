@@ -18,6 +18,7 @@ fi
 touch .nojekyll
 rm Dockerfile
 rm README.md
+rm SECURITY.md
 
 if ! grep -q "<head>" "$INDEX_FILE"; then
   echo "$INDEX_FILE in $BUILD_DIR has no <head> tag, skipping"
