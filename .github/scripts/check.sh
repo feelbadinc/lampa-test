@@ -15,7 +15,7 @@ UPSTREAM_EPOCH=$(date -d "$UPSTREAM_DATE" +%s)
 DEPLOY_DATE=$(gh api \
   "repos/$GITHUB_REPOSITORY/deployments?environment=github-pages&per_page=1" \
   -H "X-GitHub-Api-Version: $GH_API_VERSION" \
-  --jq '.[0].updated_at' 2>/dev/null || echo "")
+  --jq '.[0].updated_at // empty' 2>/dev/null || echo "")
 
 DEPLOY_EPOCH=$(date -d "${DEPLOY_DATE:-@0}" +%s 2>/dev/null || echo 0)
 

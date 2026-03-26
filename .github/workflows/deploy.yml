@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      skip_build: ${{ steps.check.outputs.skip }}
+      skip_build: ${{ steps.check.outputs.skip_build }}
       last_deploy: ${{ steps.check.outputs.last_deploy }}
 
     steps:
